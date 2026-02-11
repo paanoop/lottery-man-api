@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { ConfigModule } from '@nestjs/config';
 import { LotteryResultsLegacyModule } from './lottery-results-legacy/lottery-results-legacy.module';
 
 @Module({
-  imports: [LotteryResultsLegacyModule],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    LotteryResultsLegacyModule,
+  ],
 })
-export class AppModule {}
+export class AppModule { }
