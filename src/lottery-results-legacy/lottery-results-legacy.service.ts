@@ -1,29 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLotteryResultsLegacyDto } from './dto/create-lottery-results-legacy.dto';
-import { UpdateLotteryResultsLegacyDto } from './dto/update-lottery-results-legacy.dto';
 import * as mysql from 'mysql2/promise';
 
 @Injectable()
 export class LotteryResultsLegacyService {
-  private connection: mysql.Connection;
 
-  constructor() {
-    this.init();
-  }
-
-  private async init() {
-    this.connection = await mysql.createConnection({
-      host: process.env.DB_HOST,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASS,
-      database: process.env.DB_NAME,
-      port: Number(process.env.DB_PORT),
-
-    });
-  }
+  private pool = mysql.createPool({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    database: process.env.DB_NAME,
+    port: Number(process.env.DB_PORT),
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+  });
 
   async getResultsByDateRange(from: string, to: string) {
-    const [rows]: any = await this.connection.query(
+    const [rows]: any = await this.pool.query(
       `
       SELECT id, draw, result, draw_number, grp, result_date, created_at
       FROM draws
@@ -39,7 +32,7 @@ export class LotteryResultsLegacyService {
       const res1 = JSON.parse(row.result);
 
       if (!res1 || !Array.isArray(res1)) {
-        response.push([{ result_prety: [] }]);
+        response.push({ result_prety: [] });
         continue;
       }
 
@@ -47,20 +40,16 @@ export class LotteryResultsLegacyService {
 
       response.push({
         id: String(row.id),
-        title: row.draw.replace(
-          /LOTTERY NO\.| DRAW|st|nd|th|rd/g,
-          '',
-        ),
+        title: row.draw.replace(/LOTTERY NO\.| DRAW|st|nd|th|rd/g, ''),
         result_prety: this.getPretyResult(joinedResult),
         draw_number: String(row.draw_number),
         grp: row.grp,
         result_date: this.formatDate(row.result_date),
         short_date: this.formatShortDate(row.result_date),
-        created_at: row.created_at
-          instanceof Date
-          ? row.created_at.toISOString().slice(0, 19).replace('T', ' ')
-          : row.created_at,
-
+        created_at:
+          row.created_at instanceof Date
+            ? row.created_at.toISOString().slice(0, 19).replace('T', ' ')
+            : row.created_at,
       });
     }
 
@@ -77,6 +66,7 @@ export class LotteryResultsLegacyService {
 
     return `${weekday} ${day}-${month}-${year}`;
   }
+
   private formatShortDate(date: string) {
     const d = new Date(date);
     return d.toLocaleDateString('en-GB', {
