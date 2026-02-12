@@ -4,14 +4,18 @@ import { LotteryResultsLegacyModule } from './lottery-results-legacy/lottery-res
 import { HealthModule } from './health/health.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { LotteryResultsModule } from './lottery-results/lottery-results.module';
+import { DatabaseModule } from './database/database.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    LotteryResultsModule,
     LotteryResultsLegacyModule,
     HealthModule,
+    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -17,7 +17,7 @@ export class LotteryResultsLegacyController {
     schema: {
       type: 'string',
       format: 'date',
-      example: '2024-01-01',
+      example: '2026-02-11',
     },
   })
   @ApiQuery({
@@ -27,7 +27,7 @@ export class LotteryResultsLegacyController {
     schema: {
       type: 'string',
       format: 'date',
-      example: '2024-01-31',
+      example: '2026-02-12',
     },
   })
   async getResults(

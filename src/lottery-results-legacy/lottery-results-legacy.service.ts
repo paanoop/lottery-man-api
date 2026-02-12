@@ -1,19 +1,13 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import type { Pool } from 'mysql2/promise';
 import * as mysql from 'mysql2/promise';
 
 @Injectable()
 export class LotteryResultsLegacyService {
-
-  private pool = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME,
-    port: Number(process.env.DB_PORT),
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-  });
+  constructor(
+    // injected mysql pool
+    @Inject('MYSQL_POOL') private readonly pool: Pool,
+  ) {}
 
   async getResultsByDateRange(from: string, to: string) {
     const [rows]: any = await this.pool.query(
@@ -47,9 +41,7 @@ export class LotteryResultsLegacyService {
         result_date: this.formatDate(row.result_date),
         short_date: this.formatShortDate(row.result_date),
         created_at:
-          row.created_at instanceof Date
-            ? row.created_at.toISOString().slice(0, 19).replace('T', ' ')
-            : row.created_at,
+          row.created_at instanceof Date ? row.created_at.toISOString().slice(0, 19).replace('T', ' ') : row.created_at,
       });
     }
 
