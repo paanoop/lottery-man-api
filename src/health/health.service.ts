@@ -1,26 +1,43 @@
-import { Injectable } from '@nestjs/common';
-import { CreateHealthDto } from './dto/create-health.dto';
-import { UpdateHealthDto } from './dto/update-health.dto';
+import { Inject, Injectable } from '@nestjs/common';
+import type { Pool } from 'mysql2/promise';
 
 @Injectable()
 export class HealthService {
-  create(createHealthDto: CreateHealthDto) {
-    return 'This action adds a new health';
+  constructor(@Inject('MYSQL_POOL') private readonly pool: Pool) {}
+
+  async getLatestMobileRelease() {
+    const [rows]: any = await this.pool.query(
+      `
+      SELECT version, build_number, is_force_update
+      FROM mobile_app_releases
+      WHERE platform = 'android'
+        AND release_type = 'production'
+        AND is_active = 1
+      ORDER BY build_number DESC
+      LIMIT 1
+      `,
+    );
+
+    return rows[0] || null;
   }
 
-  findAll() {
-    return `This action returns all health`;
+  async checkDatabase() {
+    const start = Date.now();
+    await this.pool.query('SELECT 1');
+    return {
+      status: 'healthy',
+      responseTimeMs: Date.now() - start,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} health`;
-  }
+  async getMaxResultDate() {
+    const [rows]: any = await this.pool.query(
+      `
+    SELECT MAX(result_date) as maxResultDate
+    FROM draws
+    `,
+    );
 
-  update(id: number, updateHealthDto: UpdateHealthDto) {
-    return `This action updates a #${id} health`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} health`;
+    return rows[0]?.maxResultDate || null;
   }
 }
