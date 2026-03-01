@@ -1,34 +1,40 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { LotteryResultsLegacyService } from './lottery-results-legacy.service';
 import { CreateLotteryResultsLegacyDto } from './dto/create-lottery-results-legacy.dto';
 import { UpdateLotteryResultsLegacyDto } from './dto/update-lottery-results-legacy.dto';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Lottery Results Legacy')
 @Controller('lottery-results-legacy')
 export class LotteryResultsLegacyController {
-  constructor(private readonly lotteryResultsLegacyService: LotteryResultsLegacyService) {}
-
-  @Post()
-  create(@Body() createLotteryResultsLegacyDto: CreateLotteryResultsLegacyDto) {
-    return this.lotteryResultsLegacyService.create(createLotteryResultsLegacyDto);
-  }
+  constructor(private readonly lotteryResultsLegacyService: LotteryResultsLegacyService) { }
 
   @Get()
-  findAll() {
-    return this.lotteryResultsLegacyService.findAll();
+  @ApiQuery({
+    name: 'from',
+    required: true,
+    description: 'Start date in YYYY-MM-DD format',
+    schema: {
+      type: 'string',
+      format: 'date',
+      example: '2026-02-11',
+    },
+  })
+  @ApiQuery({
+    name: 'to',
+    required: true,
+    description: 'End date in YYYY-MM-DD format',
+    schema: {
+      type: 'string',
+      format: 'date',
+      example: '2026-02-12',
+    },
+  })
+  async getResults(
+    @Query('from') from: string,
+    @Query('to') to: string,
+  ) {
+    return this.lotteryResultsLegacyService.getResultsByDateRange(from, to);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.lotteryResultsLegacyService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLotteryResultsLegacyDto: UpdateLotteryResultsLegacyDto) {
-    return this.lotteryResultsLegacyService.update(+id, updateLotteryResultsLegacyDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.lotteryResultsLegacyService.remove(+id);
-  }
 }

@@ -1,98 +1,165 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🎟 Lottery Man API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A modern NestJS-based backend API designed to replace a legacy PHP
+lottery results service.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+This service provides a legacy-compatible endpoint while preparing the
+foundation for a future structured and optimized API architecture.
 
-## Description
+------------------------------------------------------------------------
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 🚀 Project Status
 
-## Project setup
+-   ✅ Legacy-compatible endpoint implemented
+-   ✅ Date-range based query (no pagination)
+-   ✅ MySQL indexed query optimization
+-   ✅ Swagger documentation enabled
+-   ✅ Environment variable configuration
+-   🚧 Parallel deployment (PHP remains live)
+-   🔜 Future structured API redesign
 
-```bash
-$ npm install
+------------------------------------------------------------------------
+
+## 📦 Tech Stack
+
+-   **NestJS 11**
+-   **MySQL (mysql2 driver)**
+-   **Swagger (OpenAPI)**
+-   **TypeScript**
+-   **Render (Deployment Target)**
+
+------------------------------------------------------------------------
+
+## 📌 Available Endpoint
+
+### GET `/lottery-results-legacy`
+
+Returns lottery results between two dates.
+
+#### Query Parameters
+
+  Parameter   Type     Format       Required
+  ----------- -------- ------------ ----------
+  from        string   YYYY-MM-DD   Yes
+  to          string   YYYY-MM-DD   Yes
+
+#### Example
+
+    GET /lottery-results-legacy?from=2024-01-01&to=2024-01-31
+
+------------------------------------------------------------------------
+
+## 📄 Response Structure
+
+``` json
+[
+  {
+    "id": "3490",
+    "title": "FF-82",
+    "result_prety": "[...]",
+    "draw_number": "82",
+    "grp": "FF",
+    "result_date": "Wed 31-Jan-24",
+    "short_date": "Wed 31 Jan",
+    "created_at": "2024-03-17 16:35:43"
+  }
+]
 ```
 
-## Compile and run the project
+⚠ Note: `result_prety` remains stringified for legacy compatibility.
 
-```bash
-# development
-$ npm run start
+------------------------------------------------------------------------
 
-# watch mode
-$ npm run start:dev
+## 🔐 Environment Variables
 
-# production mode
-$ npm run start:prod
-```
+Create a `.env` file for local development:
 
-## Run tests
+    DB_HOST=your_database_host
+    DB_USER=your_database_user
+    DB_PASS=your_database_password
+    DB_NAME=balasonl_lottery
+    DB_PORT=3306
 
-```bash
-# unit tests
-$ npm run test
+⚠ Never commit `.env` to version control.
 
-# e2e tests
-$ npm run test:e2e
+------------------------------------------------------------------------
 
-# test coverage
-$ npm run test:cov
-```
+## 🛠 Local Development
 
-## Deployment
+Install dependencies:
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+    npm install
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Run in development mode:
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+    npm run start:dev
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+Build project:
 
-## Resources
+    npm run build
 
-Check out a few resources that may come in handy when working with NestJS:
+Run production build:
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+    npm start
 
-## Support
+------------------------------------------------------------------------
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 📚 Swagger Documentation
 
-## Stay in touch
+Available at:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+    /api
 
-## License
+Example:
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+    http://localhost:3000/api
+
+------------------------------------------------------------------------
+
+## 🧠 Architecture Roadmap
+
+1.  Deploy legacy-compatible endpoint
+2.  Validate production stability
+3.  Remove stringified result formatting
+4.  Introduce structured JSON response
+5.  Add DTO validation & typing
+6.  Expand response model
+7.  Migrate Flutter app to new API
+8.  Retire legacy route (PHP remains untouched)
+
+------------------------------------------------------------------------
+
+## 📈 Performance Considerations
+
+-   `result_date` column is indexed
+-   Range queries use index scan
+-   Current bottleneck: regex parsing logic
+-   Future optimization: precomputed structured results
+
+------------------------------------------------------------------------
+
+## ⚖ Deployment Strategy
+
+Recommended Render configuration:
+
+Build Command:
+
+    npm install && npm run build
+
+Start Command:
+
+    npm start
+
+Add required environment variables via Render dashboard.
+
+------------------------------------------------------------------------
+
+## 🧾 License
+
+UNLICENSED -- Internal Project
+
+------------------------------------------------------------------------
+
+## 👨‍💻 Author
+
+Lottery Man Backend -- Phase 1 (Legacy Compatibility Mode)
